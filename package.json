@@ -15,7 +15,6 @@
     "jsonp": "^0.2.1",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
-    "socket.io": "^4.8.0",
     "socket.io-client": "^2.3.0",
     "swiper": "^11.1.14",
     "vue": "^3.2.13",

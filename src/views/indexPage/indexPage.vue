@@ -9,6 +9,8 @@
 
 <template>
     <div class="index-page">
+        <!--切换小区-->>
+        
         <!-- 左侧按钮 -->
         <NavigationCom @navigationClick="navigationClick" />
         <!-- 右侧按钮 -->
@@ -50,6 +52,12 @@ import detailsContent from './components/detailsContent.vue';
 import schoolContent from './components/schoolContent.vue';
 import museumContent from './components/museumContent.vue';
 import { RequestIntroductionList, RequestIntroductionType, RequestIntroductionId, RequestScenicId } from "@/network/PageRequest.js"
+import { globalState } from '../../../gloablState';//使用全局变量记录当前是东区还是西区
+
+
+
+
+
 
 let mapDom = inject("mapDom");
 const operateData = ref([
@@ -65,6 +73,7 @@ const theOperateData = ref(null);//记录当前点击分类的数据
 const detailsContentData = ref(null);//详情页数据
 const pointDetailsData = ref(null);//点位详情页数据
 const swiperContentData = ref([]);//轮播图页面数据
+
 onMounted(() => {
     RequestIntroductionList().then(res => {
         res.data.forEach((item, index) => {
@@ -89,47 +98,95 @@ onMounted(() => {
    
 });
 
+
 //场景漫游点击
 function sceneAnmClick(){
     let anmData = {roamId:"76",IsLoop:"0"};
     mapDom.value.callAction("activateRoam", JSON.stringify(anmData));
 }
 
+
 function navigationClick(index) {
     console.log(index);
     let viewId = "";//视角id
     let type = { typeDatas: [] };//类型数据
+    if(globalState.globalVariable===0){
+        console.log("西区");
     if (index === 0) {
         //楼宇
         viewId = "3056";
-        type.typeDatas = ["1186"];
-    }
+        type.typeDatas = ["1200"];
+        
+        
+        
+    }   
     else if (index === 1) {
         //道路
         viewId = "3057";
-        type.typeDatas = ["1187"];
+        type.typeDatas = ["1201"];
+        
+        
     }
     else if (index === 2) {
         //景观
         viewId = "3058";
-        type.typeDatas = ["1188"];
+        type.typeDatas = ["1202"];
     }
     else if (index === 3) {
         //文化景点
         viewId = "3059";
-        type.typeDatas = ["1189"];
+        type.typeDatas = ["1203"];
     }
     else if (index === 4) {
         //寝室楼
         viewId = "3060";
-        type.typeDatas = [];
+        type.typeDatas = ["1204"];
     }
     else if (index === 5) {
         //校园餐厅
         viewId = "3061";
-        type.typeDatas = [];
+        type.typeDatas = ["1205"];
+    }}
+    //东区
+    else{
+        console.log("当前东区")
+        if (index === 0) {
+        //楼宇
+        viewId = "3098";
+        type.typeDatas = ["1200"];
+        
+        
+        
+    }   
+    else if (index === 1) {
+        //道路
+        viewId = "3099";
+        type.typeDatas = ["1201"];
+        //alert(globalState.globalVariable)
+        
     }
-
+    else if (index === 2) {
+        //景观
+        viewId = "3100";
+        type.typeDatas = ["1202"];
+    }
+    else if (index === 3) {
+        //文化景点
+        viewId = "3101";
+        type.typeDatas = ["1203"];
+    }
+    else if (index === 4) {
+        //寝室楼
+        viewId = "3102";
+        type.typeDatas = ["1204"];
+    }
+    else if (index === 5) {
+        //校园餐厅
+        viewId = "3103";
+        type.typeDatas = ["1205"];
+    }
+    }
+    
     //切换场景视角
     if (viewId) mapDom.value.callAction("switchSceneView", viewId)
     mapDom.value.callAction("toggleTypePointVisibility", JSON.stringify(type));
