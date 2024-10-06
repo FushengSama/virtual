@@ -15,19 +15,16 @@
         <OperateBtnCom :data="operateData" @operateBtnClick="operateBtnClick" />
         <!-- 点位详情页 -->
         <ContentCom :styleId="3" v-if="pointDetailsData" @closeBtnClick="pointDetailsData = null">
-            <GlobalTitle :title="pointDetailsData.name" style="margin-top:3vh;" />
             <GlobalTitle :title="pointDetailsData.name" style="margin-top:32px;" />
             <details-content :data="pointDetailsData" :htmlBool="true" style="padding: 2vh 0;box-sizing: border-box;" />
         </ContentCom>
         <!-- 详情页 -->
         <ContentCom v-if="swiperContentData.length != 0" @closeBtnClick="clearData">
-            <GlobalTitle :title="theOperateData.type" style="margin-top:3vh;" />
             <GlobalTitle :title="theOperateData.type" style="margin-top:32px;" />
             <SwiperCom :data="swiperContentData" @swiperSlideClick="swiperSlideClick" />
         </ContentCom>
         <!-- 轮播图页面 -->
         <ContentCom v-if="detailsContentData" @closeBtnClick="detailsContentData = null;">
-            <GlobalTitle :title="detailsContentData.title" style="margin-top:3vh;" />
             <GlobalTitle :title="detailsContentData.title" style="margin-top:32px;" />
             <schoolContent :data="detailsContentData" />
         </ContentCom>
@@ -36,7 +33,6 @@
             v-if="theOperateData?.type == '码上带走' || theOperateData?.type == '操作引导' || theOperateData?.type == '虚拟博物馆'"
             @closeBtnClick="theOperateData = null;">
             <template v-if="theOperateData.type == '虚拟博物馆'">
-                <GlobalTitle :title="theOperateData.type" style="margin-top:3vh;" />
                 <GlobalTitle :title="theOperateData.type" style="margin-top:32px;" />
                 <museumContent />
             </template>
@@ -53,6 +49,8 @@ import detailsContent from './components/detailsContent.vue';
 import schoolContent from './components/schoolContent.vue';
 import museumContent from './components/museumContent.vue';
 import { RequestIntroductionList, RequestIntroductionType, RequestIntroductionId, RequestScenicId } from "@/network/PageRequest.js"
+import { globalState } from '../../../gloablState';//使用全局变量记录当前是东区还是西区
+
 
 let mapDom = inject("mapDom");
 const operateData = ref([
@@ -89,7 +87,10 @@ onMounted(() => {
         clearData();//清除旧数据
         RequestScenicIdFun(pointData.index_code);
     });
-   
+    //建筑查看状态退出
+    bus.on('exitBuildingStateMode', () => {
+        console.log("建筑查看状态退出");
+    });
 });
 
 //场景漫游点击
@@ -102,6 +103,10 @@ function navigationClick(index) {
     console.log(index);
     let viewId = "";//视角id
     let type = { typeDatas: [] };//类型数据
+
+
+    if(globalState.globalVariable===0){
+        console.log("西区");
     if (index === 0) {
         //楼宇
         viewId = "3056";
@@ -131,6 +136,46 @@ function navigationClick(index) {
         //校园餐厅
         viewId = "3061";
         type.typeDatas = ["1205"];
+    }}
+    //东区
+    else{
+        console.log("当前东区")
+        if (index === 0) {
+        //楼宇
+        viewId = "3098";
+        type.typeDatas = ["1200"];
+        
+        
+        
+    }   
+    else if (index === 1) {
+        //道路
+        viewId = "3099";
+        type.typeDatas = ["1201"];
+        //alert(globalState.globalVariable)
+        
+    }
+
+    else if (index === 2) {
+        //景观
+        viewId = "3100";
+        type.typeDatas = ["1202"];
+    }
+    else if (index === 3) {
+        //文化景点
+        viewId = "3101";
+        type.typeDatas = ["1203"];
+    }
+    else if (index === 4) {
+        //寝室楼
+        viewId = "3102";
+        type.typeDatas = ["1204"];
+    }
+    else if (index === 5) {
+        //校园餐厅
+        viewId = "3103";
+        type.typeDatas = ["1205"];
+    }
     }
 
     //切换场景视角

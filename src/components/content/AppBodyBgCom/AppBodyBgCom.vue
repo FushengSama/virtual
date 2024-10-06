@@ -23,7 +23,7 @@
                 <template #dropdown>
                     <div class="app-menu-view">
                         <div class="app-menu-view-child" v-for="(item, index) in campusGroup" :key="index"
-                            @click="theCampusIndex = index">{{ item }}</div>
+                            @click="theCampusIndex = index;switchLoc(theCampusIndex)">{{ item }}</div>
                     </div>
                 </template>
             </el-dropdown>
@@ -41,11 +41,13 @@
 
 <script setup>
 import { CaretBottom } from '@element-plus/icons-vue'
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref,inject } from "vue";
 import { getTime, getTimeChinese, getDayOfWeek } from "@/utils/getTime";
+import { setGlobalVariable } from '../../../../gloablState';
+//import { globalState } from '../../../../gloablState';//使用全局变量记录当前是东区还是西区
 const theCampusIndex = ref(0);
-
-const campusGroup = ref(["东校区", "西校区"]);
+let mapDom = inject("mapDom");
+const campusGroup = ref(["西校区","东校区"]);
 var yearMonthDay = ref('00年00月00天')//年月日时间
 var hours = ref('00')//小时
 var minutes = ref('00')//分钟
@@ -71,6 +73,45 @@ onMounted(() => {
 onUnmounted(() => {
     window.clearInterval(setInTime)
 })
+
+
+
+
+function switchLoc(theCampusIndex1){
+    //alert(theCampusIndex1);
+    setGlobalVariable(theCampusIndex1);
+    //var indexValue=theCampusIndex1;
+
+
+    let viewId = "";//视角id
+    let type = { typeDatas: [] };//类型数据
+    
+    if (theCampusIndex1===0)
+{       console.log("切换至西区")
+        //楼宇
+        viewId = "3056";
+        type.typeDatas = ["1200"];
+        //alert('0');
+    }   
+    else{
+        //楼宇
+        console.log("切换至东区")
+        viewId = "3098";
+        type.typeDatas = [""];
+        //alert('1')
+    }
+    if (viewId) mapDom.value.callAction("switchSceneView", viewId)
+    {mapDom.value.callAction("toggleTypePointVisibility", JSON.stringify(type));}
+
+}
+
+
+
+
+
+
+
+
 </script>
 <style lang="scss">
 .el-dropdown-link {
