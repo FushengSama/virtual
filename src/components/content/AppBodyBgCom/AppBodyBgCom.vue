@@ -55,7 +55,7 @@ import { onMounted, onUnmounted, ref,inject } from "vue";
 import { getTime, getTimeChinese, getDayOfWeek } from "@/utils/getTime";
 
 import { setGlobalVariable } from '../../../../gloablState';
-//import { globalState } from '../../../../gloablState';//使用全局变量记录当前是东区还是西区
+import { globalState } from '../../../../gloablState';//使用全局变量记录当前是东区还是西区
 
 /*
 import indexPage from '../../../views/indexPage/indexPage.vue';
@@ -92,21 +92,20 @@ var DayOfWeek = ref('星期一');
 function switchLoc(theCampusIndex1){
     //alert(theCampusIndex1);
     setGlobalVariable(theCampusIndex1);
-    //var indexValue=theCampusIndex1;
+    var indexValue=theCampusIndex1;
 
 
     let viewId = "";//视角id
     let type = { typeDatas: [] };//类型数据
-    //if(indexValue!==globalState.globalVariable){
+    if(indexValue!==globalState.globalVariable){
     if (theCampusIndex1===0)
-{console.log("西区")
+{
         //楼宇
         viewId = "3056";
         type.typeDatas = ["1200"];
         //alert('0');
     }   
     else{
-        console.log("东区")
         //楼宇
         viewId = "3098";
         type.typeDatas = [""];
@@ -118,7 +117,7 @@ function switchLoc(theCampusIndex1){
     if (viewId) mapDom.value.callAction("switchSceneView", viewId)
     {mapDom.value.callAction("toggleTypePointVisibility", JSON.stringify(type));}
 }
-//}
+}
 
 let setInTime//定义时间定时器
 onMounted(() => {
@@ -170,13 +169,11 @@ onUnmounted(() => {
 }
 
 .el-scrollbar .app-menu-view {
-    width: 100px;
-    height: 90px;
+    width: 9vh;
     padding: 0.5vh 0;
 
     .app-menu-view-child {
-        line-height: 45px;
-        font-family: 'NotoSansHans-Regular';
+        line-height: 3vh;
         font-size: 1.5vh;
         color: #1F4470;
         text-align: center;
@@ -197,8 +194,6 @@ onUnmounted(() => {
     left: 12px;
 }
 .app-top {
-    width: 100;
-    height: 87px;
     position: relative;
     top: 0;
     left: 0;
@@ -251,7 +246,6 @@ onUnmounted(() => {
             font-size: 22px;
             font-weight: bold;
             color: #1F4470;
-            line-height: 17px;
         }
     }
 }
