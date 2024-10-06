@@ -17,12 +17,10 @@ const props = defineProps({
   },
   keyValue: { //key
     type: String,
-    //default: "110073444a3206dcc219cc9355dfafc5",
     default: "969b0caa2bccde1a81905ab6d8c8a93e",
   },
   secretKeyValue: { //密钥
     type: String,
-    //default: "f4b8a678acdb585bb516df02270de35f",
     default: "892f55927b6b394f781cc02f836e5210",
   }
 });

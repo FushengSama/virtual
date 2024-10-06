@@ -6,6 +6,8 @@
  * @FilePath: \marketf:\web\liangda-navigator\src\components\content\AppBodyBgCom\AppBodyBgCom.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
+ <!--
+计时器组件-->
 <template>
     <div class="app-top">
         <img src="./images/labelTop.png" class="app-top-bg" alt="">
@@ -17,13 +19,15 @@
                 <span class="el-dropdown-link">
                     {{ campusGroup[theCampusIndex] }}
                     <el-icon class="el-icon--right">
-                        <caret-bottom />
+                        <arrow-down />
+                        
                     </el-icon>
                 </span>
                 <template #dropdown>
                     <div class="app-menu-view">
                         <div class="app-menu-view-child" v-for="(item, index) in campusGroup" :key="index"
                             @click="theCampusIndex = index;switchLoc(theCampusIndex)">{{ item }}</div>
+                            
                     </div>
                 </template>
             </el-dropdown>
@@ -37,23 +41,83 @@
             </div>
         </div>
     </div>
+    
 </template>
 
+
+
+ 
 <script setup>
-import { CaretBottom } from '@element-plus/icons-vue'
+
+
+import { ArrowDown } from '@element-plus/icons-vue'
 import { onMounted, onUnmounted, ref,inject } from "vue";
 import { getTime, getTimeChinese, getDayOfWeek } from "@/utils/getTime";
+
 import { setGlobalVariable } from '../../../../gloablState';
-//import { globalState } from '../../../../gloablState';//使用全局变量记录当前是东区还是西区
+import { globalState } from '../../../../gloablState';//使用全局变量记录当前是东区还是西区
+
+/*
+import indexPage from '../../../views/indexPage/indexPage.vue';
+
+export default {
+  data() {
+    return {
+      valueFromParent: theCampusIndex
+    };
+  },
+  components: {
+    indexPage
+  }
+};*/
+
+
+
+
+
+
+
+
 const theCampusIndex = ref(0);
 let mapDom = inject("mapDom");
 const campusGroup = ref(["西校区","东校区"]);
-var yearMonthDay = ref('00年00月00天')//年月日时间
-var hours = ref('00')//小时
-var minutes = ref('00')//分钟
-var seconds = ref('00')//秒
-var DayOfWeek = ref('星期一')
+var yearMonthDay = ref('00年00月00天');//年月日时间
+var hours = ref('00');//小时
+var minutes = ref('00');//分钟
+var seconds = ref('00');//秒
+var DayOfWeek = ref('星期一');
 
+
+//切换东区西区视角同时给全局变量赋值
+function switchLoc(theCampusIndex1){
+    //alert(theCampusIndex1);
+    setGlobalVariable(theCampusIndex1);
+    var indexValue=theCampusIndex1;
+
+
+    let viewId = "";//视角id
+    let type = { typeDatas: [] };//类型数据
+    if(indexValue!==globalState.globalVariable){
+    if (theCampusIndex1===0)
+{
+        //楼宇
+        viewId = "3056";
+        type.typeDatas = ["1200"];
+        //alert('0');
+    }   
+    else{
+        //楼宇
+        viewId = "3098";
+        type.typeDatas = [""];
+        //alert('1')
+    }   
+    
+    
+    //切换场景视角
+    if (viewId) mapDom.value.callAction("switchSceneView", viewId)
+    {mapDom.value.callAction("toggleTypePointVisibility", JSON.stringify(type));}
+}
+}
 
 let setInTime//定义时间定时器
 onMounted(() => {
@@ -68,6 +132,8 @@ onMounted(() => {
 
         DayOfWeek.value = getDayOfWeek()
     }, 1000);
+    
+    
 });
 //组件结束销毁定时器
 onUnmounted(() => {
@@ -77,49 +143,28 @@ onUnmounted(() => {
 
 
 
-function switchLoc(theCampusIndex1){
-    //alert(theCampusIndex1);
-    setGlobalVariable(theCampusIndex1);
-    //var indexValue=theCampusIndex1;
-
-
-    let viewId = "";//视角id
-    let type = { typeDatas: [] };//类型数据
-    
-    if (theCampusIndex1===0)
-{       console.log("切换至西区")
-        //楼宇
-        viewId = "3056";
-        type.typeDatas = ["1200"];
-        //alert('0');
-    }   
-    else{
-        //楼宇
-        console.log("切换至东区")
-        viewId = "3098";
-        type.typeDatas = [""];
-        //alert('1')
-    }
-    if (viewId) mapDom.value.callAction("switchSceneView", viewId)
-    {mapDom.value.callAction("toggleTypePointVisibility", JSON.stringify(type));}
-
-}
-
-
-
-
-
-
-
-
 </script>
+
+
+
+
+
+
+
+
+
 <style lang="scss">
 .el-dropdown-link {
+    margin-left: 112px;
+    top:18px;
+    @font-face {
+        font-family: "优设标题";
+        src: url("/src/assets/fonts/YouSheBiaoTiHei-2.ttf");
+    }
     display: flex;
-    align-items: center;
-    font-weight: normal;
-    font-size: 30px;
-    font-family: 'YouSheBiaoTiHei-2';
+    //align-items: center;
+    font-weight: bold;
+    font-size: 2vh;
     color: #1F4470;
 }
 
@@ -142,7 +187,14 @@ function switchLoc(theCampusIndex1){
         color: #FFFFFF;
     }
 }
-
+.el-icon--right{
+    @font-face {
+        font-family: "优设标题";
+        src: url("/src/assets/fonts/YouSheBiaoTiHei-2.ttf");
+    }
+    top: 26px;
+    left: 12px;
+}
 .app-top {
     width: 100;
     height: 87px;
@@ -151,36 +203,52 @@ function switchLoc(theCampusIndex1){
     left: 0;
 
     .app-top-bg {
+        //height: 100px;
         width: 100%;
     }
 
     .app-title {
-        font-weight: normal;
-        font-size: 47.5px;
-        font-family: 'YouSheBiaoTiHei-2';
+        @font-face {
+            font-family: "优设标题";
+            src: url("/src/assets/fonts/YouSheBiaoTiHei-2.ttf");
+        }
+        font-weight: bold;
+        font-size: 38px;
         color: #1F4470;
         position: absolute;
         top: 22px;
         left: 66px;
-        line-height: 33px;
-    }
+        //margin-right: 112px;
 
+
+        
+    }
     .app-menu {
         position: absolute;
-        left: 509.2px;
-        top: 14px;
+        margin-left: 512px;
+        top: 18px;
+        @font-face {
+            font-family: "优设标题";
+            src: url("/src/assets/fonts/YouSheBiaoTiHei-2.ttf");
+        }
+        font-size: 30px;
     }
+    
 
     .top-information {
         display: flex;
         justify-content: space-between;
         position: absolute;
-        top: 22px;
+        top: 24px;
         right: 28px;
+        @font-face {
+            font-family: "优设标题";
+            src: url("/src/assets/fonts/YouSheBiaoTiHei-2.ttf");
+        }
+        font-size: 22px;
         span {
-            font-family: 'YouSheBiaoTiHei-2';
             font-size: 22px;
-            font-weight: normal;
+            font-weight: bold;
             color: #1F4470;
             line-height: 17px;
         }

@@ -9,6 +9,8 @@
 
 <template>
     <div class="index-page">
+        <!--切换小区-->>
+        
         <!-- 左侧按钮 -->
         <NavigationCom @navigationClick="navigationClick" />
         <!-- 右侧按钮 -->
@@ -52,6 +54,10 @@ import { RequestIntroductionList, RequestIntroductionType, RequestIntroductionId
 import { globalState } from '../../../gloablState';//使用全局变量记录当前是东区还是西区
 
 
+
+
+
+
 let mapDom = inject("mapDom");
 const operateData = ref([
     { type: "校园概况" },
@@ -66,6 +72,7 @@ const theOperateData = ref(null);//记录当前点击分类的数据
 const detailsContentData = ref(null);//详情页数据
 const pointDetailsData = ref(null);//点位详情页数据
 const swiperContentData = ref([]);//轮播图页面数据
+
 onMounted(() => {
     RequestIntroductionList().then(res => {
         res.data.forEach((item, index) => {
@@ -93,29 +100,34 @@ onMounted(() => {
     });
 });
 
+
 //场景漫游点击
 function sceneAnmClick(){
     let anmData = {roamId:"76",IsLoop:"0"};
     mapDom.value.callAction("activateRoam", JSON.stringify(anmData));
 }
 
+
 function navigationClick(index) {
     console.log(index);
     let viewId = "";//视角id
     let type = { typeDatas: [] };//类型数据
-
-
     if(globalState.globalVariable===0){
         console.log("西区");
     if (index === 0) {
         //楼宇
         viewId = "3056";
         type.typeDatas = ["1200"];
-    }
+        
+        
+        
+    }   
     else if (index === 1) {
         //道路
         viewId = "3057";
         type.typeDatas = ["1201"];
+        
+        
     }
     else if (index === 2) {
         //景观
@@ -155,7 +167,6 @@ function navigationClick(index) {
         //alert(globalState.globalVariable)
         
     }
-
     else if (index === 2) {
         //景观
         viewId = "3100";
@@ -177,7 +188,7 @@ function navigationClick(index) {
         type.typeDatas = ["1205"];
     }
     }
-
+    
     //切换场景视角
     if (viewId) mapDom.value.callAction("switchSceneView", viewId)
     mapDom.value.callAction("toggleTypePointVisibility", JSON.stringify(type));
